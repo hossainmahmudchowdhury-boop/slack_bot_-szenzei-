@@ -104,3 +104,80 @@ app.command("/szenzei-fact", async ({ ack, respond }) => {
     });
   }
 });
+
+
+
+
+app.command("/szenzei-remind", async ({ command, ack, client }) => {
+  await ack();
+
+  try {
+    const text = command.text.trim();
+
+  
+    const match = text.match(/^(\d+)(s|m|h|d)\s+(.+)$/i);
+
+    if (!match) {
+      await client.chat.postEphemeral({
+        channel: command.channel_id,
+        user: command.user_id,
+        text:
+          "Usage: `/szenzei-remind <time> <message>`\n" +
+          "Examples: `/szenzei-remind 10m Finish homework` or `/szenzei-remind 1h Take a break`"
+      });
+      return;
+    }
+
+    const amount = parseInt(match[1]);
+    const unit = match[2].toLowerCase();
+    const message = match[3];
+
+    let milliseconds;
+
+    switch (unit) {
+      case "s":
+        milliseconds = amount * 1000;
+        break;
+
+      case "m":
+        milliseconds = amount * 60 * 1000;
+        break;
+
+      case "h":
+        milliseconds = amount * 60 * 60 * 1000;
+        break;
+
+      case "d":
+        milliseconds = amount * 24 * 60 * 60 * 1000;
+        break;
+    }
+
+    // Limit reminder time to 7 days
+    if (milliseconds > 7 * 24 * 60 * 60 * 1000) {
+      await client.chat.postEphemeral({
+        channel: command.channel_id,
+        user: command.user_id,
+        text: "The maximum reminder time is 7 days."
+      });
+      return;
+    }
+
+    await client.chat.postEphemeral({
+      channel: command.channel_id,
+      user: command.user_id,
+      text: `⏰ Reminder set for *${amount}${unit}*: ${message}`
+    });
+    setTimeout(async () => {
+      try {
+        await client.chat.postMessage({
+          channel: command.channel_id,
+          text: `🔔 <@${command.user_id}> Reminder: ${message}`
+        });
+      } catch (error) {
+        console.error("Failed to send reminder:", error);
+      }
+    }, milliseconds);
+  } catch (error) {
+    console.error("Reminder error:", error);
+  }
+});
