@@ -10,9 +10,15 @@ const app = new App({
   socketMode: true,
 });
 
+app.command("/szenzei-hello", async ({ ack, respond }) => {
+  await ack();
+  await respond("Hello! 👋 I'm Szenzei!");
+  await respond(`Welcome! <@${command.user_id}>! 👋`);
+});
+
+
 app.command("/szenzei-ping", async ({ ack, respond }) => {
   await ack();
-
   await respond("Szenzei is online! 🟢");
 });
 
