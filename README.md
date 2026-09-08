@@ -23,6 +23,7 @@ example usage:
 - /szenzei-fact
 - /szenzei-joke
 - /szenzei-remind
+- ,szenzei-hello
 
 Note: almost all commands require an input after the command, separated by a space.
 setup (optional):
