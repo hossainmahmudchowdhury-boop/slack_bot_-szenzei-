@@ -109,75 +109,59 @@ app.command("/szenzei-fact", async ({ ack, respond }) => {
 
 
 app.command("/szenzei-remind", async ({ command, ack, client }) => {
+  console.log("Received:", JSON.stringify(command.text));
+
   await ack();
 
-  try {
-    const text = command.text.trim();
+  const input = command.text.trim();
 
-  
-    const match = text.match(/^(\d+)(s|m|h|d)\s+(.+)$/i);
+  const parts = input.match(/^(\d+)\s*(s|m|h|d)\s+(.+)$/i);
 
-    if (!match) {
-      await client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
-        text:
-          "Usage: `/szenzei-remind <time> <message>`\n" +
-          "Examples: `/szenzei-remind 10m Finish homework` or `/szenzei-remind 1h Take a break`"
-      });
-      return;
-    }
-
-    const amount = parseInt(match[1]);
-    const unit = match[2].toLowerCase();
-    const message = match[3];
-
-    let milliseconds;
-
-    switch (unit) {
-      case "s":
-        milliseconds = amount * 1000;
-        break;
-
-      case "m":
-        milliseconds = amount * 60 * 1000;
-        break;
-
-      case "h":
-        milliseconds = amount * 60 * 60 * 1000;
-        break;
-
-      case "d":
-        milliseconds = amount * 24 * 60 * 60 * 1000;
-        break;
-    }
-
-    // Limit reminder time to 7 days
-    if (milliseconds > 7 * 24 * 60 * 60 * 1000) {
-      await client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
-        text: "The maximum reminder time is 7 days."
-      });
-      return;
-    }
-
+  if (!parts) {
     await client.chat.postEphemeral({
       channel: command.channel_id,
       user: command.user_id,
-      text: `⏰ Reminder set for *${amount}${unit}*: ${message}`
+      text:
+        "Usage: `/szenzei-remind <time> <message>`\n\n" +
+        "Examples:\n" +
+        "`/szenzei-remind 10s Test reminder`\n" +
+        "`/szenzei-remind 10m Finish homework`\n" +
+        "`/szenzei-remind 1h Take a break`"
     });
-    setTimeout(async () => {
-      try {
-        await client.chat.postMessage({
-          channel: command.channel_id,
-          text: `🔔 <@${command.user_id}> Reminder: ${message}`
-        });
-      } catch (error) {
-        console.error("Failed to send reminder:", error);
-      }
-    }, milliseconds);
-  } catch (error) {
-    console.error("Reminder error:", error);
+    return;
   }
+
+  const amount = Number(parts[1]);
+  const unit = parts[2].toLowerCase();
+  const message = parts[3];
+
+  const multipliers = {
+    s: 1000,
+    m: 60 * 1000,
+    h: 60 * 60 * 1000,
+    d: 24 * 60 * 60 * 1000
+  };
+
+  const delay = amount * multipliers[unit];
+
+  console.log(`Reminder: ${amount}${unit} - ${message}`);
+
+  await client.chat.postEphemeral({
+    channel: command.channel_id,
+    user: command.user_id,
+    text: `⏰ Reminder set for *${amount}${unit}*: ${message}`
+  });
+
+  setTimeout(async () => {
+    try {
+      await client.chat.postMessage({
+        channel: command.channel_id,
+        text: `🔔 <@${command.user_id}> Reminder: ${message}`
+      });
+
+      console.log(`✅ Reminder sent: ${message}`);
+    } catch (error) {
+      console.error("❌ Failed to send reminder:", error);
+    }
+  }, delay);
 });
