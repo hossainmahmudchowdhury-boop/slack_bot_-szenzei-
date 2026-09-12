@@ -17,13 +17,14 @@ The bot is already installed in the Hack Club Slack workspace.
 To use it:
 go to slack and run commands starting with /
 Please message the bot directly.
-example usage:
+Example usage:
 - /szenzei-ping
 - /szenzei-catfact
 - /szenzei-fact
 - /szenzei-joke
-- /szenzei-remind
-- ,szenzei-hello
+- /szenzei-remind <Time> <Remind Text>
+  
+- /szenzei-hello
 
 Note: almost all commands require an input after the command, separated by a space.
 setup (optional):
