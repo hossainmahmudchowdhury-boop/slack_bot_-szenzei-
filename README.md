@@ -13,6 +13,39 @@ This is a Slack bot designed for the Hack Club Slack workspace that allows users
 
 ## How does it work?
 
+
+## Command Usage
+
+Here are the available commands and the arguments they accept:
+
+| Command            | Arguments          | Example                               | Description                                               |
+| ------------------ | ------------------ | ------------------------------------- | --------------------------------------------------------- |
+| `/szenzei-ping`    | None               | `/szenzei-ping`                       | Checks if Szenzei is online.                              |
+| `/szenzei-hello`   | None               | `/szenzei-hello`                      | Sends a greeting message.                                 |
+| `/szenzei-catfact` | None               | `/szenzei-catfact`                    | Sends a random cat fact.                                  |
+| `/szenzei-fact`    | None               | `/szenzei-fact`                       | Sends a random fact from the bot's local fact collection. |
+| `/szenzei-joke`    | None               | `/szenzei-joke`                       | Sends a random joke.                                      |
+| `/szenzei-remind`  | `<time> <message>` | `/szenzei-remind 10m Finish homework` | Creates a reminder after the specified amount of time.    |
+
+### `/szenzei-remind` arguments
+
+The `/szenzei-remind` command requires two arguments:
+
+* `<time>` — how long to wait before sending the reminder.
+* `<message>` — the text you want to be reminded about.
+
+Examples:
+
+```text
+/szenzei-remind 10m Finish homework
+/szenzei-remind 30m Check my project
+/szenzei-remind 1h Take a break
+```
+
+
+If a command requires arguments, make sure to provide them after the command, separated by spaces.
+
+
 The bot is already installed in the Hack Club Slack workspace.
 To use it:
 go to slack and run commands starting with /
