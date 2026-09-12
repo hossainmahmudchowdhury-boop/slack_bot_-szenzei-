@@ -22,7 +22,9 @@ Example usage:
 - /szenzei-catfact
 - /szenzei-fact
 - /szenzei-joke
-- /szenzei-remind <Time> <Remind Text>
+- /szenzei-remind
+
+  (Time, Remind Text)
   
 - /szenzei-hello
 
