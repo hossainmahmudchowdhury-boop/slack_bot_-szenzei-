@@ -10,11 +10,15 @@ const app = new App({
   socketMode: true,
 });
 
-app.command("/szenzei-hello", async ({ ack, respond }) => {
+
+app.command("/szenzei-hello", async ({ ack, respond, client, command }) => { 
   await ack();
-  await respond("Hello! 👋 I'm Szenzei!");
-  await respond(`Welcome! <@${command.user_id}>! 👋`);
-});
+   await respond("Hello! 👋 I'm Szenzei!"); 
+  await client.chat.postMessage({ 
+    channel: command.channel_id, 
+    text: `Welcome! <@${command.user_id}>! 👋` }); 
+console.log("Welcome message sent"); });
+
 
 
 app.command("/szenzei-ping", async ({ ack, respond }) => {
